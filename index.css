@@ -1,0 +1,33 @@
+.container {
+    display: flex;
+    justify-content: center;
+    height: 100vh;
+
+}
+
+.content {
+    text-align: center;
+    font-size: 35px;
+}
+
+.content button,
+.content input[type="text"],
+.content input[type="button"],
+.content table {
+    font-size: inherit;
+}
+
+table {
+    margin: 0 auto;
+    background-color: rgb(255, 255, 255);
+}
+
+table,
+th,
+td {
+    padding: 15px;
+    border: 1px solid black;
+    text-align: center;
+
+    border-collapse: collapse;
+}

@@ -1,0 +1,37 @@
+<html>
+
+<head>
+    <link rel="stylesheet" type="text/css" href="index.css">
+    </style>
+    <script src="index.js"></script>
+
+    <title>Truth table generator</title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="content">
+            <br>
+            <input id="toggle-info" type="button" value="&#9660;" onclick="toggle_info_onclick();"></button>
+            <div id="info-div" style="display: none;"></div>
+            <br><br>
+            <input id="input" type="text" size="50">
+            <br><br>
+
+            <input 
+                type="button" 
+                value="generate truth table" 
+                onclick="generate_truth_table_onclick();">
+            <br><br>
+            <input 
+                type="button" 
+                value="copy LaTeX table" 
+                onclick="copy_latex_table_onclick();">
+            <br><br>
+
+            <table id="table"></table>
+        </div>
+    </div>
+</body>
+
+</html>
