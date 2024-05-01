@@ -17,16 +17,25 @@
     font-size: inherit;
 }
 
+body {
+    background-color: rgb(40, 40, 40);
+    color: rgb(200, 200, 200);
+}
+
+input {
+    background-color: rgb(40, 40, 40);
+    color: rgb(200, 200, 200);
+}
+
 table {
     margin: 0 auto;
-    background-color: rgb(255, 255, 255);
+    background-color: rgb(40, 40, 40);
 }
 
 table,
 th,
 td {
     padding: 15px;
-    border: 1px solid black;
     text-align: center;
 
     border-collapse: collapse;

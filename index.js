@@ -73,9 +73,8 @@ const operators = [
     }
 ];
 
-function get_input_and_varibles(input_str) {
+function get_input(input_str, variables) {
     const input = [];
-    const variables = [];
 
     for (var i = 0; i < input_str.length;) {
         var c = input_str[i];
@@ -149,7 +148,7 @@ function get_input_and_varibles(input_str) {
         i++;
     }
 
-    return [input, variables];
+    return input;
 }
 
 function get_levels(input, levels, offset = 0) {
@@ -237,8 +236,10 @@ function get_truth_table(levels, variables_cnt) {
         for (var i = 0; i < variables_cnt; i++)
             variable_values.unshift(((n >> i) & 1) > 0);
 
-        const output = calculate_output(variable_values, levels);
-        variable_values.push(output);
+        levels.forEach(level => {
+            const output = calculate_output(variable_values, level);
+            variable_values.push(output);
+        });
 
         truth_table.push(variable_values);
     }
@@ -275,13 +276,17 @@ function generate_truth_table_html(levels, variable_names) {
     const table_html = document.getElementById('table');
     table_html.innerHTML = '';
 
-    // fancy str
-    const fancy_str = get_fancy_str(levels, variable_names, 'html');
+    const color = "rgb(100, 100, 100)";  
 
     // header
     const header_html = document.createElement('tr');
-    variable_names.forEach(vn => header_html.innerHTML += `<td style="border-bottom: 5px solid black">${vn}</td>`);
-    header_html.innerHTML += `<td style="border-left: 5px solid black; border-bottom: 5px solid black">${fancy_str}</td>`;
+    variable_names.forEach(vn => header_html.innerHTML += `<td style="border-bottom: 1px solid ${color}">${vn}</td>`);
+
+    levels.forEach((level, i) => {
+        const fancy_str = get_fancy_str(level, variable_names, 'html');
+        const border_style = i == 0 ? `border-left: 1px solid ${color};` : "";
+        header_html.innerHTML += `<td style="${border_style} border-bottom: 1px solid ${color}">${fancy_str}</td>`;
+    });
     table_html.appendChild(header_html);
 
     // data
@@ -289,8 +294,8 @@ function generate_truth_table_html(levels, variable_names) {
         const row_html = document.createElement('tr');
         row.forEach((el, i) => {
             const el_str = el ? '1' : '0';
-            if (i == row.length - 1)
-                row_html.innerHTML += `<td style="border-left: 5px solid black;">${el_str}</td>`;
+            if (i == variable_names.length)
+                row_html.innerHTML += `<td style="border-left: 1px solid ${color};">${el_str}</td>`;
             else
                 row_html.innerHTML += `<td>${el_str}</td>`;
         });
@@ -299,68 +304,23 @@ function generate_truth_table_html(levels, variable_names) {
     });
 }
 
-function get_latex_str(levels, variable_names) {
-    // get truthtable
-    const truth_table = get_truth_table(levels, variable_names.length);
-
-    // latex init
-    var latex_str = '\\begin{displaymath}\n\\begin{array}{';
-    for (var i = 0; i < variable_names.length; i++)
-        latex_str += i == 0 ? 'c' : ' c';
-    latex_str += '|c}\n';
-
-    // header
-    variable_names.forEach((vn, i) => {
-        latex_str += vn + ' & ';
-    });
-    latex_str += get_fancy_str(levels, variable_names, 'latex') + ' \\\\ \\hline\n';
-
-    // data
-    truth_table.forEach(row => {
-        row.forEach((el, i) => {
-            latex_str += (el ? 'T' : 'F') + (i == row.length - 1 ? ' \\\\\n' : ' & ');
-        });
-    });
-
-    // latex exit
-    latex_str += '\\end{array}\n\\end{displaymath}';
-
-    return latex_str;
-}
-
 function generate_truth_table_onclick() {
     // get input str
-    const input_html = document.getElementById('input');
-    const input_str = input_html.value;
+    const input_str = document.getElementById('input').value;
+    const formula_strs = input_str.split(',');
 
     // get input data
-    const [input, variable_names] = get_input_and_varibles(input_str);
-
-    // get levels
     const levels = [];
-    get_levels(input, levels);
+    const variable_names = [];
+    formula_strs.forEach(formula_str => {
+        const input = get_input(formula_str, variable_names);
+        const level = [];
+        get_levels(input, level);
+        levels.push(level);
+    });
 
     // generate truth table
     generate_truth_table_html(levels, variable_names);
-}
-
-function copy_latex_table_onclick() {
-    // get input str
-    const input_html = document.getElementById('input');
-    const input_str = input_html.value;
-
-    // get input data
-    const [input, variable_names] = get_input_and_varibles(input_str);
-
-    // get levels
-    const levels = [];
-    get_levels(input, levels);
-
-    // get latex str
-    const latex_str = get_latex_str(levels, variable_names);
-
-    // copy to clipboard
-    navigator.clipboard.writeText(latex_str);
 }
 
 function generate_info_div(div_html) {
